@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django import forms
+from django.db.models import Count
 
 # Create your views here.
 
@@ -17,7 +18,16 @@ class CustomLogoutView(LogoutView):
 
 @login_required
 def dashboard_home(request):
-    return render(request, 'dashboard/dashboard_home.html')
+    from .models import Task, Project
+    task_stats = Task.objects.values('status').annotate(count=Count('id'))
+    total_projects = Project.objects.count()
+    total_tasks = Task.objects.count()
+    stats = {s['status']: s['count'] for s in task_stats}
+    return render(request, 'dashboard/dashboard_home.html', {
+        'stats': stats,
+        'total_projects': total_projects,
+        'total_tasks': total_tasks,
+    })
 
 class TaskForm(forms.ModelForm):
     class Meta:
