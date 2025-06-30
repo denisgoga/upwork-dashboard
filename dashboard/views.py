@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django import forms
 from django.db.models import Count
+from django.contrib import messages
+from django.http import HttpResponseForbidden
 
 # Create your views here.
 
@@ -93,3 +95,26 @@ def add_task_comment(request, task_pk):
     else:
         form = TaskCommentForm()
     return render(request, 'dashboard/task_comment_form.html', {'form': form, 'task': task})
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['name', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-input block w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500', 'placeholder': 'Project name'}),
+            'description': forms.Textarea(attrs={'class': 'form-textarea block w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500', 'rows': 3, 'placeholder': 'Project description'}),
+        }
+
+@login_required
+def project_create(request):
+    if not request.user.role == 'admin':
+        return HttpResponseForbidden()
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Project created successfully!')
+            return HttpResponseRedirect(reverse('project_list'))
+    else:
+        form = ProjectForm()
+    return render(request, 'dashboard/project_form.html', {'form': form})
