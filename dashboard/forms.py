@@ -10,7 +10,7 @@ class TaskForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'class': 'form-textarea block w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500', 'rows': 4, 'placeholder': 'Enter task description'}),
             'assignee': forms.Select(attrs={'class': 'form-select block w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500'}),
             'status': forms.Select(attrs={'class': 'form-select block w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500'}),
-            'due_date': forms.DateInput(attrs={'class': 'form-input block w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500', 'type': 'date'}),
+            'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-input block w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500'}),
             'priority': forms.Select(attrs={'class': 'form-select block w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500'}),
         }
 

@@ -7,10 +7,15 @@ Upwork Dashboard është një aplikacion Django për menaxhimin e projekteve, de
 - Listim, detaje, krijim/editim projektesh dhe detyrash
 - Komente për detyra
 - Admin panel me filtra të avancuar
-- Seed i të dhënave fillestare
+- Seed i të dhënave fillestare me përdorues realë (emra të grupit), projekte dhe task të shumtë
 - Import projekte nga Upwork API
 - UI moderne me Tailwind CSS (ngjyra sticky notes për forma)
 - Dashboard me statistika (task count by status)
+- **Tabelë me të gjithë developer-at në dashboard**
+- **Fshirje projektesh dhe detyrash nga admin (me konfirmim)**
+- **Developer mund të ndryshojë vetëm statusin e detyrave të tij**
+- **Vetëm admin mund të krijojë projekte dhe detyra**
+- **Butonat Edit/Delete të pa-klikueshëm për developer-at që nuk janë assignee**
 
 ## ⚙️ Instalimi
 
@@ -56,11 +61,11 @@ Aksesoni aplikacionin te: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ## 👤 Kredenciale Testuese (nga seed)
 - **Admin:**
-  - Username: `admin`
-  - Password: `admin123`
+  - Username: `betaplan`
+  - Password: `BetaPlan123`
 - **Developer:**
-  - Username: `dev1` / `dev2`
-  - Password: `dev123`
+  - Username: `helsid` / `ilda` / `denis` / `mirjan` / `eleana` / `xhulio`
+  - Password: `Helsid123` / `Ilda123` / `Denis123` / `Mirjan123` / `Eleana123` / `Xhulio123`
 
 ## 📦 Funksione Shtesë
 - **Import nga Upwork:**
@@ -74,6 +79,7 @@ Aksesoni aplikacionin te: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 - Të gjitha pamjet kryesore janë të stilizuara me Tailwind CSS.
 - Forma për detyra dhe komente kanë background të verdhë (sticky notes).
 - Tabelat, butonat dhe input-et janë të qarta dhe moderne.
+- Tabela e developer-ave në dashboard.
 
 ## 📝 Kontributi
 Pull request-et dhe sugjerimet janë të mirëpritura!

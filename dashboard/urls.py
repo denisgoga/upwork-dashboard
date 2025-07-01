@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CustomLoginView, CustomLogoutView, dashboard_home, project_list, project_detail, task_create, task_edit, add_task_comment, project_create
+from .views import CustomLoginView, CustomLogoutView, dashboard_home, project_list, project_detail, task_create, task_edit, add_task_comment, project_create, project_delete, task_delete
 
 urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
@@ -11,4 +11,6 @@ urlpatterns = [
     path('tasks/<int:pk>/edit/', task_edit, name='task_edit'),
     path('tasks/<int:task_pk>/comment/', add_task_comment, name='add_task_comment'),
     path('projects/create/', project_create, name='project_create'),
+    path('projects/<int:pk>/delete/', project_delete, name='project_delete'),
+    path('tasks/<int:pk>/delete/', task_delete, name='task_delete'),
 ] 

@@ -36,6 +36,31 @@
     <div class="mb-4">
         <a href="{% url 'project_list' %}" class="inline-block px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow">Projects</a>
     </div>
+    <div class="mb-8">
+        <h3 class="text-xl font-bold mb-2 text-gray-700">Developers List</h3>
+        <div class="overflow-x-auto rounded shadow">
+            <table class="min-w-full bg-white rounded-lg">
+                <thead class="bg-blue-100">
+                    <tr>
+                        <th class="py-2 px-4 text-left font-semibold">First Name</th>
+                        <th class="py-2 px-4 text-left font-semibold">Last Name</th>
+                        <th class="py-2 px-4 text-left font-semibold">Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for dev in developers %}
+                    <tr class="border-b hover:bg-blue-50">
+                        <td class="py-2 px-4">{{ dev.first_name }}</td>
+                        <td class="py-2 px-4">{{ dev.last_name }}</td>
+                        <td class="py-2 px-4">{{ dev.email }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="3" class="py-2 px-4 text-center text-gray-500">No developers found.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html> 

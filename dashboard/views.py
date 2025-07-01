@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
-from .models import Project, Task, TaskComment
+from .models import Project, Task, TaskComment, CustomUser
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -25,10 +25,12 @@ def dashboard_home(request):
     total_projects = Project.objects.count()
     total_tasks = Task.objects.count()
     stats = {s['status']: s['count'] for s in task_stats}
+    developers = CustomUser.objects.filter(role='developer')
     return render(request, 'dashboard/dashboard_home.html', {
         'stats': stats,
         'total_projects': total_projects,
         'total_tasks': total_tasks,
+        'developers': developers,
     })
 
 class TaskForm(forms.ModelForm):
@@ -72,13 +74,31 @@ def task_create(request, project_pk):
 @login_required
 def task_edit(request, pk):
     task = Task.objects.get(pk=pk)
+    # Vetëm admin mund të editojë të gjitha fushat, developer vetëm statusin
+    if request.user.role == 'admin':
+        class AdminTaskForm(TaskForm):
+            class Meta(TaskForm.Meta):
+                fields = ['title', 'description', 'assignee', 'status', 'due_date', 'priority']
+        FormClass = AdminTaskForm
+    else:
+        # Developer mund të ndryshojë vetëm statusin e detyrave ku është assignee
+        if task.assignee != request.user:
+            return HttpResponseForbidden()
+        class DevTaskForm(forms.ModelForm):
+            class Meta:
+                model = Task
+                fields = ['status']
+                widgets = {
+                    'status': forms.Select(attrs={'class': 'form-select block w-full rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500'}),
+                }
+        FormClass = DevTaskForm
     if request.method == 'POST':
-        form = TaskForm(request.POST, instance=task)
+        form = FormClass(request.POST, instance=task)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('project_detail', args=[task.project.pk]))
     else:
-        form = TaskForm(instance=task)
+        form = FormClass(instance=task)
     return render(request, 'dashboard/task_form.html', {'form': form, 'project': task.project, 'edit': True})
 
 @login_required
@@ -118,3 +138,26 @@ def project_create(request):
     else:
         form = ProjectForm()
     return render(request, 'dashboard/project_form.html', {'form': form})
+
+@login_required
+def project_delete(request, pk):
+    if request.user.role != 'admin':
+        return HttpResponseForbidden()
+    project = get_object_or_404(Project, pk=pk)
+    if request.method == 'POST':
+        project.delete()
+        messages.success(request, 'Project deleted successfully!')
+        return HttpResponseRedirect(reverse('project_list'))
+    return render(request, 'dashboard/project_confirm_delete.html', {'project': project})
+
+@login_required
+def task_delete(request, pk):
+    if request.user.role != 'admin':
+        return HttpResponseForbidden()
+    task = get_object_or_404(Task, pk=pk)
+    project_pk = task.project.pk
+    if request.method == 'POST':
+        task.delete()
+        messages.success(request, 'Task deleted successfully!')
+        return HttpResponseRedirect(reverse('project_detail', args=[project_pk]))
+    return render(request, 'dashboard/task_confirm_delete.html', {'task': task})
